@@ -4,16 +4,14 @@ Write module.ini to mask some pixels
 """
 
 ########################################
-# General Imports
+# Imports
 ########################################
 
 import sys
-import array
-import ROOT
-import pickle
+
 
 ########################################
-# General configuration
+# Configuration
 ########################################
 
 outfile_name = "module.ini"
@@ -52,7 +50,6 @@ def checkInputs( min_col, min_row, max_col, max_row ):
 # end of checkInput
 
 
-
 ########################################
 # createMask
 ########################################
@@ -65,7 +62,7 @@ def createMask( min_col, min_row, max_col, max_row ):
     min_col will NOT be masked
     max_col will NOT be masked
     min_row will NOT be masked
-    max_row will not be masked    
+    max_row will NOT be masked    
     '''
 
     # make sure that the inputs are sensible
