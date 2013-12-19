@@ -83,9 +83,7 @@ def createMask( min_col, min_row, max_col, max_row ):
     # Loop over columns and rows
     for i_row in range( abs_max_row + 1 ):
         for i_col in range( abs_max_col + 1 ):
-            
-
-            
+                        
             # check if we want to mask this pixel
             if not (( min_col <= i_col <= max_col ) and ( min_row <= i_row <= max_row)):
                 cnt_mask += 1
@@ -105,7 +103,7 @@ def createMask( min_col, min_row, max_col, max_row ):
 # Allow use from the shell 
 #########################################
 
-# If callled from the command-line: execute doHadd
+# If callled from the command-line: execute createMask
 if __name__ == "__main__":
 
     # Make sure we have exactly one argument
@@ -117,5 +115,6 @@ if __name__ == "__main__":
     else:
         print "Wrong number of arguments. Usage: "
         print "python writeMaskFile min_col min_row max_col max_row"
+        print "Everything OUTSIDE the given coordinates will be masked!"
     # end of checking input
 # end of treating command_line call
