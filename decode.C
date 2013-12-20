@@ -24,10 +24,10 @@ struct Waveform_t {
 //   unsigned short chn1[1024];
   char           chn2_header[4];
   unsigned short chn2[1024];
-  //  char           chn3_header[4];
-  //  unsigned short chn3[1024];
-  char           chn4_header[4];
-  unsigned short chn4[1024];
+   char           chn3_header[4];
+   unsigned short chn3[1024];
+   // char           chn4_header[4];
+   //unsigned short chn4[1024];
 };
 
 void decode(char *filename) {
@@ -51,11 +51,9 @@ void decode(char *filename) {
 
    // Create branches for the channels
    rec->Branch("chn2", &chn2 ,"chn2[1024]/D");
-   // rec->Branch("chn3", &chn3 ,"chn3[1024]/D");
-   rec->Branch("chn4", &chn4 ,"chn4[1024]/D");
+   rec->Branch("chn3", &chn3 ,"chn3[1024]/D");
+   //rec->Branch("chn4", &chn4 ,"chn4[1024]/D");
   
-
-
 
    // loop over all events in data file
    for (n=0 ; fread(&header, sizeof(header), 1, f) > 0; n++) {
@@ -76,8 +74,8 @@ void decode(char *filename) {
        //chn1[i] = (Double_t) ((waveform.chn1[i]) / 65535. - 0.5) * 1000;   
 	
        chn2[i] = (Double_t) ((waveform.chn2[i]) / 65535. - 0.5) * 1000;   
-       //    chn3[i] = (Double_t) ((waveform.chn3[i]) / 65535. - 0.5) * 1000;   
-       chn4[i] = (Double_t) ((waveform.chn4[i]) / 65535. - 0.5) * 1000;   
+       chn3[i] = (Double_t) ((waveform.chn3[i]) / 65535. - 0.5) * 1000;   
+       //chn4[i] = (Double_t) ((waveform.chn4[i]) / 65535. - 0.5) * 1000;   
      }
      //cout << "5" << endl;
      rec->Fill();

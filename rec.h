@@ -25,12 +25,12 @@ public :
    // Declaration of leaf types
    Double_t        t[1024];
    Int_t           n;
-   Double_t        chn4[1024];
+   Double_t        chn3[1024];
 
    // List of branches
    TBranch        *b_t;   //!
    TBranch        *b_n;   //!
-   TBranch        *b_chn4;   //!
+   TBranch        *b_chn3;   //!
 
    rec(TTree *tree=0);
    virtual ~rec();
@@ -56,10 +56,10 @@ rec::rec(TTree *tree) : fChain(0)
 // if parameter tree is not specified (or zero), connect the file
 // used to generate this class and read the Tree.
    if (tree == 0) {
-      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("/home/data_drs/December2013/Run1_SingleCrystal_NotIrradiated_350MeV_Col60.root");
+      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("/shome/gregor/testbeam_data/Run4.root");
       if (!f || !f->IsOpen()) {
 	//	f = new TFile("10khz-50dB-316_2m_C1_5_C2_6.root");
-		f = new TFile("/home/data_drs/December2013/Run1_SingleCrystal_NotIrradiated_350MeV_Col60.root");
+		f = new TFile("/shome/gregor/testbeam_data/Run4.root");
 		//		f = new TFile("PLTS116-m70V.root");
 		//	f = new TFile("PLTS116-m100V.root");
 	//	f = new TFile("PLTS116-m350V.root");
@@ -115,7 +115,7 @@ void rec::Init(TTree *tree)
 
    fChain->SetBranchAddress("t", t, &b_t);
    fChain->SetBranchAddress("n", &n, &b_n);
-   fChain->SetBranchAddress("chn4", chn4, &b_chn4);
+   fChain->SetBranchAddress("chn3", chn3, &b_chn3);
    Notify();
 }
 
