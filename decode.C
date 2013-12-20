@@ -36,28 +36,33 @@ void decode(char *filename) {
    Double_t t[1024], chn1[1024], chn2[1024], chn3[1024], chn4[1024];
    Int_t n;
    Int_t k =0;
-   //cout << "1.0" << endl;
+
    // open the binary waveform file
-   //   FILE *f = fopen(Form("%s", filename), "r");
-   FILE *f = fopen(Form("%s.dat", filename), "r");
-   //cout << "1.1" << endl;
+   FILE *f;
+   f = fopen(Form("%s.dat", filename), "r");
+
    //open the root file
    TFile *outfile = new TFile(Form("%s.root", filename), "RECREATE");
-   //cout << "1.2" << endl;
-   // define the rec tree
+
+   // define the output tree
    TTree *rec = new TTree("rec","rec");
    rec->Branch("t", &t   ,"t[1024]/D");  
    rec->Branch("n", &k   ,"n/I");  
-   // rec->Branch("chn1", &chn1 ,"chn1[1024]/D");
-   //cout << "1.3" << endl;
+
+   // Create branches for the channels
    rec->Branch("chn2", &chn2 ,"chn2[1024]/D");
    // rec->Branch("chn3", &chn3 ,"chn3[1024]/D");
    rec->Branch("chn4", &chn4 ,"chn4[1024]/D");
   
+
+
+
    // loop over all events in data file
    for (n=0 ; fread(&header, sizeof(header), 1, f) > 0; n++) {
-     //cout << "2" << endl;
 
+      if (n%1000 == 0){
+	 cout << n << endl;
+      }
      // decode time      
      for (Int_t i=0; i<1024; i++)
        t[i] = (Double_t) header.time[i];
