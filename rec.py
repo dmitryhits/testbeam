@@ -5,7 +5,7 @@ if not ROOT.gROOT.ProcessLine(".L rec.C+")==0:
    sys.exit()
 
 basepath = "/shome/gregor/testbeam_data/"
-run      = "Run7"
+run      = "Run9"
 
 
 myRec = ROOT.rec( basepath + run + ".root")
@@ -16,7 +16,7 @@ li_hs = [ROOT.histo,
          ROOT.histo2,
          ROOT.histo3]
 
-outfile = ROOT.TFile( basepath+run + "_histos.root", "RECREATE" )
+outfile = ROOT.TFile( run + "_histos.root", "RECREATE" )
 outfile.cd()
 
 for h in li_hs:
