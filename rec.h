@@ -26,6 +26,10 @@ public :
    Double_t        t[1024];
    Int_t           n;
    Double_t        chn3[1024];
+   Double_t        meanval;
+   Double_t        integralval;
+   Double_t        integral2val;
+   Double_t        minval;
 
    // List of branches
    TBranch        *b_t;   //!

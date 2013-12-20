@@ -40,6 +40,15 @@ void rec::Loop()
    TH1F* histo1 = new TH1F("histo1","Integral-2",2024,-600,+600);
    TH1F* histo2 = new TH1F("histo2","Mean_{0-200}",2024,-600,+600);
    TH1F* histo3 = new TH1F("histo3","Peak",2024,-600,+600);
+
+   TFile *ft = new TFile("tree.root","RECREATE");
+   TTree *newtree = fChain->CloneTree(0);
+   newtree->SetAutoSave(10000000);  // autosave when 10 Mbyte written
+   newtree->Branch("mean",        &meanval,           "mean/D");
+   newtree->Branch("integral",    &integralval,   "integral/D");
+   newtree->Branch("integral2",   &integral2val, "integral2/D");
+   newtree->Branch("min",         &minval,             "min/D");
+
    Long64_t nentries = fChain->GetEntriesFast();
 
    TCanvas* c1 = new TCanvas();
@@ -65,6 +74,14 @@ void rec::Loop()
 	histo2->Fill(mean);
 	histo3->Fill(-1.*min);
       // if (Cut(ientry) < 0) continue;
+
+	meanval      =    mean;
+	integralval  = -1*integral;
+	integral2val = -1*integral2;
+	minval       = -1*min;
+
+	newtree->Fill();
+
    }
 cout<<endl;
 c1->Divide(2,2);
@@ -76,6 +93,11 @@ c1->cd(3);
 histo2->Draw();
 c1->cd(4);
 histo3->Draw();
+
+ ft->Write();
+ delete ft;
+
+
 }
 
 Float_t rec::FindMinimum(Int_t first, Int_t last){
