@@ -56,19 +56,17 @@ rec::rec(TTree *tree) : fChain(0)
 // if parameter tree is not specified (or zero), connect the file
 // used to generate this class and read the Tree.
    if (tree == 0) {
-      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("/shome/gregor/testbeam_data/Run6.root");
-      if (!f || !f->IsOpen()) {
-	//	f = new TFile("10khz-50dB-316_2m_C1_5_C2_6.root");
-		f = new TFile("/shome/gregor/testbeam_data/Run6.root");
-		//		f = new TFile("PLTS116-m70V.root");
-		//	f = new TFile("PLTS116-m100V.root");
-	//	f = new TFile("PLTS116-m350V.root");
-         //f = new TFile("10khz-50dB-632_4mV.root");
-         //f = new TFile("10khz-50dB-316_2mV.root");
+      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("/shome/gregor/testbeam_data/Run7.root");
+      if (!f || !f->IsOpen()) {	 
+		f = new TFile("/shome/gregor/testbeam_data/Run7.root");
       }
       f->GetObject("rec",tree);
 
    }
+   
+
+
+
    Init(tree);
 }
 
