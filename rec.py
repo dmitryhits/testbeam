@@ -5,7 +5,7 @@ if not ROOT.gROOT.ProcessLine(".L rec.C+")==0:
    sys.exit()
 
 basepath = "/shome/gregor/testbeam_data/"
-run      = "Run9"
+run      = "Run10"
 
 
 myRec = ROOT.rec( basepath + run + ".root")
