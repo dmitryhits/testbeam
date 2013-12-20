@@ -24,17 +24,17 @@ public :
 
    // Declaration of leaf types
    Double_t        t[1024];
-   Int_t           n;
-   Double_t        chn3[1024];
    Double_t        meanval;
    Double_t        integralval;
    Double_t        integral2val;
    Double_t        minval;
+   Int_t           n;
+   Double_t        chn_sig[1024];
 
    // List of branches
    TBranch        *b_t;   //!
    TBranch        *b_n;   //!
-   TBranch        *b_chn3;   //!
+   TBranch        *b_chn_sig;   //!
 
    rec(char *filename);
    virtual ~rec();
@@ -107,7 +107,8 @@ void rec::Init(TTree *tree)
 
    fChain->SetBranchAddress("t", t, &b_t);
    fChain->SetBranchAddress("n", &n, &b_n);
-   fChain->SetBranchAddress("chn3", chn3, &b_chn3);
+   // CHANGE SIGNAL CHANNEL HERE
+   fChain->SetBranchAddress("chn4", chn_sig, &b_chn_sig);
    Notify();
 }
 

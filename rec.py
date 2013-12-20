@@ -1,11 +1,18 @@
 import ROOT
+import sys
+
+if len(sys.argv)<2:
+   print "wrong number of input arguments. Usage:"
+   print "python rec.py RunX"
+   print "(per default runs are read from /shome/gregor/testbeam_data/)"
+   
 
 if not ROOT.gROOT.ProcessLine(".L rec.C+")==0:
    print "Error loading/compiling rec_C.so Exiting."
    sys.exit()
 
 basepath = "/shome/gregor/testbeam_data/"
-run      = "Run10"
+run      = sys.argv[1]
 
 
 myRec = ROOT.rec( basepath + run + ".root")

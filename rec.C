@@ -103,9 +103,9 @@ histo3->Draw();
 Float_t rec::FindMinimum(Int_t first, Int_t last){
 	if(!(first>=0&&first<last&&last<=1024))
 		return -9999999;
-	Float_t min = chn3[first];
+	Float_t min = chn_sig[first];
 	for(int i = first; i<last;i++){
-		if(chn3[i]<min)min=chn3[i];
+		if(chn_sig[i]<min)min=chn_sig[i];
 	}
 	return min;
 	
@@ -115,7 +115,7 @@ Float_t rec::GetAvrgMean(Int_t first, Int_t last,Float_t avrgMean){
 	Float_t mean = 0;
 	Int_t nAvrg = last-first;
 	for(UInt_t i = first;i< last;i++){
-		mean+=chn3[i];
+		mean+=chn_sig[i];
 		//cout<<i<<" "<<mean<<endl;
 	}
 	mean = mean/(Float_t)nAvrg;
@@ -125,6 +125,6 @@ Float_t rec::GetAvrgMean(Int_t first, Int_t last,Float_t avrgMean){
 
 
 void rec::DrawGraph(){
-	TGraph *gShape = new TGraph(1024,t,chn3);
+	TGraph *gShape = new TGraph(1024,t,chn_sig);
 	gShape->Draw("APL");
 }

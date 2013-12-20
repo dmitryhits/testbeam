@@ -6,7 +6,7 @@ basepath = "./"
 ROOT.gStyle.SetOptStat(0)
 ROOT.gROOT.ForceStyle()
 
-li_runs = [ 4,5,6,7,8,9 ]
+li_runs = [ 4,5,6,7,8,9,10 ]
 
 dic_run_volts = {
     4 : "500",
