@@ -20,14 +20,14 @@ struct Header_t {
 };
 
 struct Waveform_t {
-   //char           chn1_header[4];
-   //unsigned short chn1[1024];
-   char           chn2_header[4];
-   unsigned short chn2[1024];
-   //char           chn3_header[4];
-   //unsigned short chn3[1024];
-   char           chn4_header[4];
-   unsigned short chn4[1024];
+  char           chn1_header[4];
+  unsigned short chn1[1024];
+  char           chn2_header[4];
+  unsigned short chn2[1024];
+  //char           chn3_header[4];
+  //unsigned short chn3[1024];
+  char           chn4_header[4];
+  unsigned short chn4[1024];
 };
 
 void decode(char *filename) {
@@ -70,7 +70,7 @@ void decode(char *filename) {
      
       // decode amplitudes in mV
      for (Int_t i=0; i<1024; i++) {
-       //chn1[i] = (Double_t) ((waveform.chn1[i]) / 65535. - 0.5) * 1000;   	
+       chn1[i] = (Double_t) ((waveform.chn1[i]) / 65535. - 0.5) * 1000;   	
        chn2[i] = (Double_t) ((waveform.chn2[i]) / 65535. - 0.5) * 1000;   
        //chn3[i] = (Double_t) ((waveform.chn3[i]) / 65535. - 0.5) * 1000;   
        chn4[i] = (Double_t) ((waveform.chn4[i]) / 65535. - 0.5) * 1000;   
