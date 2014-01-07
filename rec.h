@@ -18,47 +18,49 @@
 // Fixed size dimensions of array or collections stored in the TTree if any.
 
 class rec {
-public :
-   TTree          *fChain;   //!pointer to the analyzed TTree or TChain
-   Int_t           fCurrent; //!current Tree number in a TChain
+  char *filename;
+ public :
+  TTree          *fChain;   //!pointer to the analyzed TTree or TChain
+  Int_t           fCurrent; //!current Tree number in a TChain
 
-   // Declaration of leaf types
-   Double_t        t[1024];
-   Double_t        meanval;
-   Double_t        integralval;
-   Double_t        integral2val;
-   Double_t        minval;
-   Int_t           n;
-   Double_t        chn_sig[1024];
-
-   // List of branches
-   TBranch        *b_t;   //!
-   TBranch        *b_n;   //!
-   TBranch        *b_chn_sig;   //!
-
-   rec(char *filename);
-   virtual ~rec();
-   virtual Int_t    Cut(Long64_t entry);
-   virtual Int_t    GetEntry(Long64_t entry);
-   virtual Long64_t LoadTree(Long64_t entry);
-   virtual void     Init(TTree *tree);
-   virtual void     Loop();
-   Float_t GetAvrgMean(Int_t first, Int_t last,Float_t avrgMean);
-
-   Float_t FindMinimum(Int_t first, Int_t last);
-   void DrawGraph();
-
-   virtual Bool_t   Notify();
-   virtual void     Show(Long64_t entry = -1);
+  // Declaration of leaf types
+  Double_t        t[1024];
+  Double_t        meanval;
+  Double_t        integralval;
+  Double_t        integral2val;
+  Double_t        minval;
+  Int_t           n;
+  Double_t        chn_sig[1024];
+  
+  // List of branches
+  TBranch        *b_t;   //!
+  TBranch        *b_n;   //!
+  TBranch        *b_chn_sig;   //!
+  
+  rec(char*);
+  virtual ~rec();
+  virtual Int_t    Cut(Long64_t entry);
+  virtual Int_t    GetEntry(Long64_t entry);
+  virtual Long64_t LoadTree(Long64_t entry);
+  virtual void     Init(TTree *tree);
+  virtual void     Loop();
+  Float_t GetAvrgMean(Int_t first, Int_t last,Float_t avrgMean);
+  
+  Float_t FindMinimum(Int_t first, Int_t last);
+  void DrawGraph();
+  
+  virtual Bool_t   Notify();
+  virtual void     Show(Long64_t entry = -1);
 };
 
 #endif
 
 #ifdef rec_cxx
-rec::rec(char *filename) : fChain(0) 
+rec::rec(char *init_filename) : fChain(0) 
 {
    TTree *tree;
-   TFile *f = new TFile( filename );
+   filename = init_filename;
+   TFile *f = new TFile(filename);
    f->GetObject("rec", tree);
 
    Init(tree);

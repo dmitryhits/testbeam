@@ -41,7 +41,18 @@ void rec::Loop()
    TH1F* histo2 = new TH1F("histo2","Mean_{0-200}",2024,-600,+600);
    TH1F* histo3 = new TH1F("histo3","Peak",2024,-600,+600);
 
-   TFile *ft = new TFile("tree.root","RECREATE");
+   char output_filename[1024];
+   if((sizeof(filename)+12) < sizeof(output_filename)){
+     strncpy(output_filename,filename, sizeof(output_filename));
+     char* ext;
+     ext = strstr(output_filename,".root");
+     strncpy(ext,"_histos.root",12);
+   }
+   else {
+     cout << "filename is too long" << endl;
+   } 
+
+   TFile *ft = new TFile(output_filename,"RECREATE");
    TTree *newtree = fChain->CloneTree(0);
    newtree->SetAutoSave(10000000);  // autosave when 10 Mbyte written
    newtree->Branch("mean",        &meanval,           "mean/D");
@@ -57,10 +68,10 @@ void rec::Loop()
       Long64_t ientry = LoadTree(jentry);
       if (ientry < 0) break;
       nb = fChain->GetEntry(jentry);   nbytes += nb;
-	Float_t mean = GetAvrgMean(0,100,0);
-	Float_t integral = GetAvrgMean(0,1024,mean);
-	Float_t integral2 = GetAvrgMean(0,1024,0);
-	Float_t min = FindMinimum(0,1024);
+	Float_t mean = GetAvrgMean(0,200,0);
+	Float_t integral = GetAvrgMean(224,644,mean);
+	Float_t integral2 = GetAvrgMean(224,644,0);
+	Float_t min = FindMinimum(224,644);
 	min -= mean;
 	if (ientry%100==0)
 		cout<<TString::Format("\r%4d/%4d \t%5.1f",ientry,nentries,(Float_t)ientry/(Float_t)(nentries)*100)<<flush;
