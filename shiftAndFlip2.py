@@ -1,6 +1,6 @@
 n_count  =0
 
-def shiftAndFlip( h ):
+def shiftAndFlip2( h ):
     ''' find the position of the pedestal and pion peak
     pedestal is the highest bin
     pion is the highest bin of the second highest bin
@@ -25,8 +25,8 @@ def shiftAndFlip( h ):
     peak1=h.GetMaximum()
     #Find second largest peak
     for iBin in range(2,h.GetNbinsX()):
-        if iBin > 4+iPeak1 or iBin<iPeak1-4:
-            if h.GetBinContent(iBin) > peak2 and h.GetBinContent(iBin)>h.GetBinContent(iBin+1) and h.GetBinContent(iBin)>h.GetBinContent(iBin-1):
+        if iBin > 10+iPeak1 or iBin<iPeak1-10:
+            if h.GetBinContent(iBin) > peak2 and h.GetBinContent(iBin)>h.GetBinContent(iBin+5) and h.GetBinContent(iBin)>h.GetBinContent(iBin-5):
                 peak2= h.GetBinContent(iBin)
                 iPeak2=iBin
                 
@@ -37,7 +37,7 @@ def shiftAndFlip( h ):
     #Shift
     for iBin in range(1,h.GetNbinsX()+1):
 
-        newBin = iBin - iPeak1 + h.FindBin(0)
+        newBin = iBin - iPeak2 + h.FindBin(0)
 
         if newBin <= 0:
             continue
@@ -47,20 +47,10 @@ def shiftAndFlip( h ):
         h2.SetBinContent( newBin, h.GetBinContent(iBin))
     # end of loop over bins
 
-
-    #Find second peak
-    for iBin in range(2,h2.GetNbinsX()):
-        if iBin > 4+h2.FindBin(0) or iBin<h2.FindBin(0)-4:
-            if h2.GetBinContent(iBin) > peak2 and h2.GetBinContent(iBin)>h2.GetBinContent(iBin+1) and h2.GetBinContent(iBin)>h2.GetBinContent(iBin-1):
-                peak2= h2.GetBinContent(iBin)
-                iPeak2=iBin
-                
-    # end of loop over bins
-
     print "Peaks: ", h2.GetBinCenter(iPeak1), h2.GetBinCenter( iPeak2)
 
     # Check if we need a flip
-    if h2.GetBinCenter( iPeak2)<0: ##Flip
+    if h2.GetBinCenter( iPeak1)<0: ##Flip
         print "FLIPPING"
         for iBin in range(1,h2.GetNbinsX()+1):
             if h2.GetBinCenter(iBin)>0:break

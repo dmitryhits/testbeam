@@ -105,6 +105,11 @@ histo2->Draw();
 c1->cd(4);
 histo3->Draw();
 
+histo->Write();
+histo1->Write();
+histo2->Write();
+histo3->Write();
+
  ft->Write();
  delete ft;
 
