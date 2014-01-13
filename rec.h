@@ -110,7 +110,7 @@ void rec::Init(TTree *tree)
    fChain->SetBranchAddress("t", t, &b_t);
    fChain->SetBranchAddress("n", &n, &b_n);
    // CHANGE SIGNAL CHANNEL HERE
-   fChain->SetBranchAddress("chn4", chn_sig, &b_chn_sig);
+   fChain->SetBranchAddress("chn3", chn_sig, &b_chn_sig);
    Notify();
 }
 

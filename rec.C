@@ -79,11 +79,12 @@ void rec::Loop()
 	//cout<<"\tmean:    "<<mean;
 	//cout<<"\tintegral: "<<integral<<endl;
 //	DrawGraph();
-
-	histo->Fill(-1*integral);
-	histo1->Fill(-1*integral2);
-	histo2->Fill(mean);
-	histo3->Fill(-1.*min);
+	if(ientry>150000 && ientry<290000){
+	  histo->Fill(-1*integral);
+	  histo1->Fill(-1*integral2);
+	  histo2->Fill(mean);
+	  histo3->Fill(-1.*min);
+	}
       // if (Cut(ientry) < 0) continue;
 
 	meanval      =    mean;
@@ -109,9 +110,8 @@ histo->Write();
 histo1->Write();
 histo2->Write();
 histo3->Write();
-
- ft->Write();
- delete ft;
+ft->Write();
+delete ft;
 
 
 }
