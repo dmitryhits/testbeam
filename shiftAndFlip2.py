@@ -30,6 +30,8 @@ def shiftAndFlip2( h ):
                 peak2= h.GetBinContent(iBin)
                 iPeak2=iBin
                 
+    print "Highest peak before shift " + str(h.GetBinCenter(iPeak1)) + " with height " + str(peak1)
+    print "Lowest peak before shift " + str(h.GetBinCenter(iPeak2)) + " with height " + str(peak2)
  
     h2 = h.Clone("cloned"+str(n_count))
     h2.SetDirectory(0)

@@ -23,9 +23,10 @@ def shiftAndFlip( h ):
     #Find First Peak (pedestal)
     iPeak1=h.GetMaximumBin()
     peak1=h.GetMaximum()
+    print "Peaks before shift " + str(h.GetBinCenter(iPeak1)) + " and " + str(peak1)
     #Find second largest peak
     for iBin in range(2,h.GetNbinsX()):
-        if iBin > 4+iPeak1 or iBin<iPeak1-4:
+        if iBin > 10+iPeak1 or iBin<iPeak1-10:
             if h.GetBinContent(iBin) > peak2 and h.GetBinContent(iBin)>h.GetBinContent(iBin+1) and h.GetBinContent(iBin)>h.GetBinContent(iBin-1):
                 peak2= h.GetBinContent(iBin)
                 iPeak2=iBin
@@ -60,7 +61,7 @@ def shiftAndFlip( h ):
     print "Peaks: ", h2.GetBinCenter(iPeak1), h2.GetBinCenter( iPeak2)
 
     # Check if we need a flip
-    if h2.GetBinCenter( iPeak2)<0: ##Flip
+    if h2.GetBinCenter( iPeak2)<0 or 1==1: ##Flip
         print "FLIPPING"
         for iBin in range(1,h2.GetNbinsX()+1):
             if h2.GetBinCenter(iBin)>0:break

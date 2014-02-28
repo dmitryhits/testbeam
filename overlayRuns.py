@@ -1,29 +1,60 @@
 import ROOT 
 from ROOT import gROOT, TCanvas, TH1
+from shiftAndFlip import shiftAndFlip
 from shiftAndFlip2 import shiftAndFlip2
+from shiftFlipandScale import shiftFlipAndScale
 
 basepath = "/shome/hits/testbeam_data/"
 gROOT.Reset()
 ROOT.gStyle.SetOptStat(0)
 ROOT.gROOT.ForceStyle()
 
-li_runs = [ 30,39,40,41,42 ]
+
+#li_runs = [  24 ]
+li_runs = [  24,25,26,27,28,29 ]
+#li_runs = [ 15,16,17, 18 ]
+#li_runs = [ 11,12,13,15,16,17, 18 ]
+#li_runs = [ 14, 30 ]
+
+#outfile = ROOT.TFile( basepath+"Run" +str(li_runs) + "_overlayed.root","OVERWRITE")
 
 dic_run_volts = {
-    30 : "500",
-    39 : "500",
-    40 : "500",
-    41 : "500",
-    42 : "500",
-}
+    11 : "+500 ",
+    12 : "-500 ",
+    13 : "+1000",
+    15 : "-1000",
+    16 : "-1000",
+    17 : "-1000",
+    18 : "-1000",
+    24 : "-500 ",
+    25 : "-500 ",
+    26 : "-500 ",
+    27 : "-500 ",
+    28 : "-500 ",
+    29 : "-500 ",
+    31 : "+500 ",
+    }
 
+dic_gain = {
+    14: "10",
+    30: " 6",
+    }
 dic_run_rates = {
-    30 : "SC,1500",
-    39 : "1000",
-    40 : "9000",
-    41 : "120000",
-    42 : "9000",
-}
+    11 : "200  ",
+    12 : "210  ",
+    13 : "200  ",
+    15 : "200  ",
+    16 : "4000 ",
+    17 : "8000 ",
+    18 : "12500",
+    24 : "1500  ",
+    25 : "21000 ",
+    26 : "43000 ",
+    27 : "83000 ",
+    28 : "160000",
+    29 : "1500  ",
+    31 : "1100 ",
+    }
 
 dic_hs = {}
 
@@ -66,23 +97,40 @@ for i_h in sorted(dic_hs.keys()):
 
     print i_h, h.Integral()
     
-    h_tmp = shiftAndFlip2( dic_hs[i_h] )
+    if(i_h > 10 and i_h < 17):
+        h_tmp = shiftFlipAndScale( dic_hs[i_h] )
+    if(i_h <30 and i_h >16):
+        h_tmp = shiftAndFlip( dic_hs[i_h] )
+        # at and after run30 a pixel map was making background much smaller introduced
+        # the signal peak became bigger than background ,
+        # thus requireing a change in shiftAndFlip algorithm
+    if(i_h >= 30):
+        h_tmp = shiftAndFlip2( dic_hs[i_h] )
     li_hs.append( h_tmp )
     
-    print  "Scaling before", h_tmp.FindBin(-10),  h_tmp.FindBin(100),  1/h_tmp.Integral( h_tmp.FindBin(-10), h_tmp.FindBin(100))    
-    h_tmp.Scale( 1/h_tmp.Integral( h_tmp.FindBin(-10), h_tmp.FindBin(100)))
-    print  "Scaling after", h_tmp.FindBin(-10),  h_tmp.FindBin(100),  1/h_tmp.Integral( h_tmp.FindBin(-10), h_tmp.FindBin(100))
-    h_tmp.SetAxisRange( -10., 100., "x")
-    
+    print  "Scaling before", h_tmp.FindBin(-20),  h_tmp.FindBin(100),  1/h_tmp.Integral( h_tmp.FindBin(-20), h_tmp.FindBin(100))    
+    if(i_h > 10 and i_h < 17):
+        h_tmp.Scale( 1/(0.658*h_tmp.Integral( h_tmp.FindBin(-20), h_tmp.FindBin(100))))
+        print  "Scaling after", h_tmp.FindBin(-20),  h_tmp.FindBin(100),  1/h_tmp.Integral( h_tmp.FindBin(-20), h_tmp.FindBin(100))
+    else:
+        h_tmp.Scale( 1/h_tmp.Integral( h_tmp.FindBin(-20), h_tmp.FindBin(100)))
+        print  "Scaling after", h_tmp.FindBin(-20),  h_tmp.FindBin(100),  1/h_tmp.Integral( h_tmp.FindBin(-20), h_tmp.FindBin(100))
+
+    h_tmp.SetAxisRange( -20., 100., "x")
+    print "Mean",i_h, h_tmp.GetMean()
     h_tmp.SetLineWidth(2)
     h_tmp.SetLineColor(li_colors.pop(0))
     
 
-    if i_h == 30: # Run that sets the scale
+    if i_h == 14: # Run that sets the scale
         h_tmp.Draw()
     else:
         h_tmp.Draw("SAME")
 
-    leg.AddEntry( h_tmp, "Run "+str(i_h)+ " (" + dic_run_rates[i_h]+" Hz)", "L" )
+    leg.AddEntry( h_tmp, "Run "+str(i_h)+ " (" + dic_run_rates[i_h]+" Hz)" +" : " +  dic_run_volts[i_h]+ " V" , "L" )
+    #leg.AddEntry( h_tmp, "Run "+str(i_h) +": Gain = "+ dic_gain[i_h] , "L" )
 
 leg.Draw()
+
+
+c1.SaveAs("overlayer.root")

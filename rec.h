@@ -26,16 +26,19 @@ class rec {
   // Declaration of leaf types
   Double_t        t[1024];
   Double_t        meanval;
-  Double_t        integralval;
-  Double_t        integral2val;
-  Double_t        minval;
+  Double_t        integral_short_val;
+  Double_t        integral_medium_val;
+  Double_t        integral_long_val;
+  Double_t        min_val;
   Int_t           n;
   Double_t        chn_sig[1024];
+  Double_t        chn_trg[1024];
   
   // List of branches
   TBranch        *b_t;   //!
   TBranch        *b_n;   //!
   TBranch        *b_chn_sig;   //!
+  TBranch        *b_chn_trg;   //!
   
   rec(char*);
   virtual ~rec();
@@ -48,6 +51,9 @@ class rec {
   
   Float_t FindMinimum(Int_t first, Int_t last);
   void DrawGraph();
+  Int_t GetNumberOfTriggers(Float_t trigger_level);
+  Float_t Get2ndTriggerTime(Float_t trigger_level);
+
   
   virtual Bool_t   Notify();
   virtual void     Show(Long64_t entry = -1);
@@ -110,7 +116,9 @@ void rec::Init(TTree *tree)
    fChain->SetBranchAddress("t", t, &b_t);
    fChain->SetBranchAddress("n", &n, &b_n);
    // CHANGE SIGNAL CHANNEL HERE
-   fChain->SetBranchAddress("chn3", chn_sig, &b_chn_sig);
+   fChain->SetBranchAddress("chn4", chn_sig, &b_chn_sig);
+   // CHANGE TRIGGER CHANNEL HERE
+   fChain->SetBranchAddress("chn2", chn_trg, &b_chn_trg);
    Notify();
 }
 
