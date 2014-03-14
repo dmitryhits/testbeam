@@ -36,39 +36,7 @@ void rec::Loop()
    if (fChain == 0) return;
 
    //Book histograms
-   TH1F* h_Integral_short = new TH1F("h_Integral_short","Integral short",2024,-600,+600);
-   TH1F* h_Integral_medium = new TH1F("h_Integral_medium","Integral medium",2024,-600,+600);
-   TH1F* h_Integral_long = new TH1F("Integral_long","Integral long",2024,-600,+600);
-   TH1F* h_Mean = new TH1F("h_Mean","Mean_{0-200}",2024,-600,+600);
-   TH1F* h_Min = new TH1F("h_Min","Min",2024,-600,+600);
-   TH1F* h_n_triggers = new TH1F("h_n_triggers","Number of triggers",20,0,20);
-
-   //Append _histos to the file name
-   char output_filename[1024];
-   if((sizeof(filename)+12) < sizeof(output_filename)){
-     strncpy(output_filename,filename, sizeof(output_filename));
-     char* ext;
-     ext = strstr(output_filename,".root");
-     strncpy(ext,"_histos.root",12);
-   }
-   else {
-     cout << "filename is too long" << endl;
-   } 
-
-   TFile *ft = new TFile(output_filename,"RECREATE");
-   // Book tree branches
-   TTree *newtree = fChain->CloneTree(0);
-   newtree->SetAutoSave(10000000);  // autosave when 10 Mbyte written
-   newtree->Branch("mean",        &meanval,           "mean/D");
-   newtree->Branch("integral_short",    &integral_short_val,   "integral_short/D");
-   newtree->Branch("integral_medium",   &integral_medium_val, "integral_medium/D");
-   newtree->Branch("integral_long",   &integral_long_val, "integral_long/D");
-   newtree->Branch("min",   &min_val, "min/D");
-
-   Long64_t nentries = fChain->GetEntriesFast();
-
-   TCanvas* c1 = new TCanvas();
-   Long64_t nbytes = 0, nb = 0;
+   TH1F* h_Integral_short_50 = new   Long64_t nbytes = 0, nb = 0;
    for (Long64_t jentry=0; jentry<nentries;jentry++) {
       Long64_t ientry = LoadTree(jentry);
       if (ientry < 0) break;
@@ -77,6 +45,8 @@ void rec::Loop()
 	Float_t integral_long = GetAvrgMean(224,644,0);
 	Float_t integral_medium = GetAvrgMean(294,574,0);
 	Float_t integral_short = GetAvrgMean(364,504,0);
+	Float_t integral_short_100 = GetAvrgMean(399,469,0);
+	Float_t integral_short_50 = GetAvrgMean(417,452,0);
 	Float_t min = FindMinimum(364,504);
 	Int_t n_triggers =  GetNumberOfTriggers(-200);
 	//min -= mean;
@@ -87,20 +57,25 @@ void rec::Loop()
 	//cout<<"\tintegral: "<<integral<<endl;
 //	DrawGraph();
 //
-//	if(ientry>150000 && ientry<290000){ // limits for run 41
+	if(ientry>150000 && ientry<290000){ // limits for run 41
 //	if(ientry<150000){ // limits for run 16
 //	if(ientry<27000){ // limits for run 12
 //	if(ientry<54000){ // limits for run 13
 	  h_Integral_short->Fill(-1*integral_short);
+	  h_Integral_short_50->Fill(-1*integral_short_50);
+	  h_Integral_short_100->Fill(-1*integral_short_100);
 	  h_Integral_medium->Fill(-1*integral_medium);
 	  h_Integral_long->Fill(-1*integral_long);
 	  h_Mean->Fill(mean);
 	  h_Min->Fill(min);
 	  h_n_triggers->Fill(n_triggers);
-//	}
+	}
       // if (Cut(ientry) < 0) continue;
 
 	meanval      =    mean;
+	n_triggers_val  = n_triggers;
+	integral_short_val_50  = -1*integral_short_50;
+	integral_short_val_100  = -1*integral_short_100;
 	integral_short_val  = -1*integral_short;
 	integral_medium_val  = -1*integral_medium;
 	integral_long_val  = -1*integral_long;
@@ -110,19 +85,25 @@ void rec::Loop()
 	
    }
    cout<<endl;
-   c1->Divide(2,3);
+   c1->Divide(2,4);
    c1->cd(1);
-   h_Integral_short->Draw();
+   h_Integral_short_50->Draw();
    c1->cd(2);
-   h_Integral_medium->Draw();
+   h_Integral_short_100->Draw();
    c1->cd(3);
-   h_Integral_long->Draw();
+   h_Integral_short->Draw();
    c1->cd(4);
-   h_Mean->Draw();
+   h_Integral_medium->Draw();
    c1->cd(5);
-   h_n_triggers->Draw();
+   h_Integral_long->Draw();
    c1->cd(6);
+   h_Mean->Draw();
+   c1->cd(7);
+   h_n_triggers->Draw();
+   c1->cd(8);
    h_Min->Draw();   
+   h_Integral_short_50->Write();
+   h_Integral_short_100->Write();
    h_Integral_short->Write();
    h_Integral_medium->Write();
    h_Integral_long->Write();
@@ -135,13 +116,16 @@ void rec::Loop()
 Int_t rec::GetNumberOfTriggers(Float_t trigger_level){
   Int_t  n_triggers = 0;
   Int_t trigger_on = 0;
+  Int_t i_on=0;
+  Int_t min_trigger_length = 7 // 7 = 10 ns at 0.7 GSAMPLES/s
   for (int i=0;i<1024;i++){
-    if (chn_trg[i]<trigger_level and trigger_on == 0) {
+    if (chn_trg[i]<trigger_level && trigger_on == 0) {
       trigger_on = 1;
-      n_triggers++;
+      i_on=i;
   }
-    if (chn_trg[i]>trigger_level and trigger_on == 1) 
+    if (chn_trg[i]>trigger_level && trigger_on == 1 ) 
       trigger_on = 0;
+    if (i_on+min_ttrigger_length<i) n_triggers++;
   }
   return n_triggers;
 }
