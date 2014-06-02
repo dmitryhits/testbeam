@@ -3,11 +3,11 @@ import math
 
 ROOT.gStyle.SetOptFit(11111)
 
-n0 = 134989
-n1 = 4776
-n2 = 206
-n3 = 24
-n4 = 6
+n0 = 114750
+n1 = 3140
+n2 = 96
+n3 = 7
+n4 = 1
 n5 = 0
 
 n = n0 + n1 + n2 + n3 +n4
@@ -23,8 +23,8 @@ h.SetBinContent(4,n3)
 h.SetBinError  (4,math.sqrt(n3))
 h.SetBinContent(5,n4)
 h.SetBinError  (5,math.sqrt(n4))
-h.SetBinContent(6,n5)
-h.SetBinError  (6,math.sqrt(n5))
+#h.SetBinContent(6,n5)
+#h.SetBinError  (6,math.sqrt(n5))
 
 
 c = ROOT.TCanvas("c","c",600,600)
@@ -34,8 +34,8 @@ h.SetTitle("")
 h.GetYaxis().SetRangeUser(1,1.e6)
 h.Draw()
 
-f = ROOT.TF1("f","[0]*TMath::PoissonI(x,[1])",0,6)
+f = ROOT.TF1("f","[0]*TMath::PoissonI(x,[1])")
 f.SetParameter(0,1)
 f.SetParameter(1,0.01)
 
-h.Fit("f","","",1,6)
+h.Fit("f")

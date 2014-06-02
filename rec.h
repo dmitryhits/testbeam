@@ -36,6 +36,7 @@ class rec {
   Double_t        chn_sig[1024];
   Double_t        chn_trg[1024];
   Int_t           n_triggers_val;
+  Int_t           Second_trigger_time_val;
 
   // List of branches
   TBranch        *b_t;   //!
@@ -55,7 +56,8 @@ class rec {
   Float_t FindMinimum(Int_t first, Int_t last);
   void DrawGraph();
   Int_t GetNumberOfTriggers(Float_t trigger_level);
-  Float_t Get2ndTriggerTime(Float_t trigger_level);
+  Int_t Get1stTriggerTime(Float_t trigger_level);
+  Int_t Get2ndTriggerTime(Float_t trigger_level);
 
   
   virtual Bool_t   Notify();
@@ -119,7 +121,7 @@ void rec::Init(TTree *tree)
    fChain->SetBranchAddress("t", t, &b_t);
    fChain->SetBranchAddress("n", &n, &b_n);
    // CHANGE SIGNAL CHANNEL HERE
-   fChain->SetBranchAddress("chn4", chn_sig, &b_chn_sig);
+   fChain->SetBranchAddress("chn1", chn_sig, &b_chn_sig);
    // CHANGE TRIGGER CHANNEL HERE
    fChain->SetBranchAddress("chn2", chn_trg, &b_chn_trg);
    Notify();
