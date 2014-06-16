@@ -26,8 +26,12 @@ class rec {
   // Declaration of leaf types
   Double_t        t[1024];
   Double_t        meanval;
+  Double_t        mean_short_val_50;
+  Double_t        mean_short_val_100;
   Double_t        integral_short_val_50;
+  Double_t        integral_short_mean_val_50;
   Double_t        integral_short_val_100;
+  Double_t        integral_short_mean_val_100;
   Double_t        integral_short_val;
   Double_t        integral_medium_val;
   Double_t        integral_long_val;
@@ -36,6 +40,7 @@ class rec {
   Double_t        chn_sig[1024];
   Double_t        chn_trg[1024];
   Int_t           n_triggers_val;
+  Int_t           First_trigger_time_val;
   Int_t           Second_trigger_time_val;
 
   // List of branches
