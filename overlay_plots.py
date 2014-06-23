@@ -19,6 +19,7 @@ list_rates_Hz = [ 3e3 , 3e4 , 3e5 , 3e6 , 3e7 ]
 dic_rates = dict(zip(list_rates,list_rates_Hz))
 list_signs = ["minus","plus"]
 list_voltages = ["n500V", "p500V", "n1000V", "p1000V"]
+dic_voltages = {"n500V":"-500 V","p500V":"+500 V","n1000V":"-1000 V","p1000V":"+1000 V"}
 li_hs_colors = [ROOT.kBlack, ROOT.kRed, ROOT.kBlue, 8, 28, ROOT.kOrange, ROOT.kGreen, ROOT.kMagenta]*10
 li_gr_colors = [ROOT.kBlack, ROOT.kRed, ROOT.kBlue, 8, 28, ROOT.kOrange, ROOT.kGreen, ROOT.kMagenta]*10
 ################# setup legend ###################################
@@ -107,7 +108,7 @@ for sample in list_samples:
     dic_sign_rate = {"plus":rate_plus,"minus":rate_minus}
     dic_sign_pedestal = {"plus":ped_plus,"minus":ped_minus}
     dic_sign_pedestal_error = {"plus":ped_plus_error,"minus":ped_minus_error}
-    dic_sign_count = {"plus":0,"minus":0}
+    dic_sign_count = {"plus":0,"minus":1}
 ###################################################################
  
 ######################## scan thru files for one sample #########################
@@ -136,44 +137,26 @@ for sample in list_samples:
             low = h_tmp.GetBinCenter(h_tmp.GetMaximumBin())- h_tmp.GetRMS()
             high = h_tmp.GetBinCenter(h_tmp.GetMaximumBin())+ h_tmp.GetRMS()
             h_tmp.Fit("gaus","M0","",low,high)
-######################### negative voltage ##############################################        
-            if voltage.count("n") == 1:
-                dic_sample_sign_leg[sample]["minus"].AddEntry( h_tmp, "-500V " +  str(dic_rates[rate]/1000) + " kHz/cm2", "L" )
-                dic_sign_pedestal["minus"].append(h_tmp.GetFunction("gaus").GetParameter(1))
-                dic_sign_pedestal_error["minus"].append(h_tmp.GetFunction("gaus").GetParError(1))
-                dic_sign_rate["minus"].append(dic_rates[rate])
-                print "INDEX : "+ str(1+2*list_samples.index(sample)) +" SAMPLE :" + sample
-                c1.cd(1+2*list_samples.index(sample))
+######################### scan thru both voltage signs ###################################
+            for sign in list_signs:
+                dic_sample_sign_leg[sample][sign].AddEntry( h_tmp, dic_voltages[voltage] + str(dic_rates[rate]/1000) + " kHz/cm2", "L" )
+                dic_sign_pedestal[sign].append(h_tmp.GetFunction("gaus").GetParameter(1))
+                dic_sign_pedestal_error[sign].append(h_tmp.GetFunction("gaus").GetParError(1))
+                dic_sign_rate[sign].append(dic_rates[rate])
+                print "INDEX : "+ str(1+list_signs.index(sign)+2*list_samples.index(sample)) +" SAMPLE :" + sample
+                print "SIGN : " + sign + " : VOLTAGE " + voltage
+                c1.cd(1+list_signs.index(sign)+2*list_samples.index(sample))
                 h_tmp.Scale(100/h_tmp.Integral(h_tmp.FindBin(-100),h_tmp.FindBin(100)) )
-                if dic_sign_count["minus"] == 0: # Run that sets the scale
+                if dic_sign_count[sign] == 0: # Run that sets the scale
                     h_tmp.Draw()
                     h_tmp.SetAxisRange( -50., 50., "x")
                     h_tmp.SetAxisRange( 0, 10., "y")
                     h_tmp.SetTitle(sample)
                 else:
                     h_tmp.Draw("SAME")
-                    dic_sample_sign_leg[sample]["minus"].Draw()
+                    dic_sample_sign_leg[sample][sign].Draw()
                 print
-                dic_sign_count["minus"]+=1
-######################### positive voltage ##############################################        
-            if voltage.count("p") == 1:
-                dic_sample_sign_leg[sample]["plus"].AddEntry( h_tmp, "+500V " +  str(dic_rates[rate]/1000) + " kHz/cm2", "L" )
-                dic_sign_pedestal["plus"].append(h_tmp.GetFunction("gaus").GetParameter(1))
-                dic_sign_pedestal_error["plus"].append(h_tmp.GetFunction("gaus").GetParError(1))
-                dic_sign_rate["plus"].append(dic_rates[rate])
-                c1.cd(2+2*list_samples.index(sample))
-                print "INDEX : "+ str(2+2*list_samples.index(sample)) +" SAMPLE :" + sample
-                h_tmp.Scale(100/h_tmp.Integral(h_tmp.FindBin(-100),h_tmp.FindBin(100)) )
-                if dic_sign_count["plus"] == 0: # Run that sets the scale
-                    h_tmp.Draw()
-                    h_tmp.SetAxisRange( -50., 50., "x")
-                    h_tmp.SetAxisRange( 0, 10., "y")
-                    h_tmp.SetTitle(sample)
-                else:
-                    h_tmp.Draw("SAME")
-                    dic_sample_sign_leg[sample]["plus"].Draw()
-                dic_sign_count["plus"]+=1
-            
+                dic_sign_count[sign]+=1
     
     
     #leg.AddEntry( h_tmp, "Run "+str(i_h) +": Gain = "+ dic_gain[i_h] , "L" )
