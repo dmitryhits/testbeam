@@ -35,6 +35,7 @@ void rec::Loop()
 //by  b_branchname->GetEntry(ientry); //read only this branch
    if (fChain == 0) return;
 
+
    //Book histograms
    TH1F* h_Integral_short_50 = new TH1F("h_Integral_short_50","Integral short, 50 bins",2024,-600,+600);
    TH1F* h_Integral_short_mean_50 = new TH1F("h_Integral_short_mean_50","Integral short - before the trigger mean, 50 bins",2024,-600,+600);
@@ -93,9 +94,12 @@ void rec::Loop()
       if (ientry < 0) break;
       nb = fChain->GetEntry(jentry);   nbytes += nb;
 	Int_t First_trigger_time =  Get1stTriggerTime(-200);
+	if (First_trigger_time<0) continue;
+	//cout << "First trigger time "<< First_trigger_time << endl;
 	Int_t Second_trigger_time =  Get2ndTriggerTime(-200);
 	Float_t mean = GetAvrgMean(0,1024,0);
 	Float_t mean_short_50 = -999;
+	//cout << "1" << endl;
 	if (First_trigger_time>50)
 	  mean_short_50 = GetAvrgMean(First_trigger_time-50,First_trigger_time,0); //short (50 bin)average before the trigger
 	else
@@ -105,18 +109,21 @@ void rec::Loop()
 	  mean_short_100 = GetAvrgMean(First_trigger_time-100,First_trigger_time,0); //short (100 bin) average before the trigger
 	else
 	  cout << "First trigger is less than 100 bins after the trace start : " << First_trigger_time << endl;
-	Float_t integral_long = GetAvrgMean(First_trigger_time+32,First_trigger_time+432,0); //400
-	Float_t integral_medium = GetAvrgMean(First_trigger_time+82,First_trigger_time+382,0);//300
-	Float_t integral_short = GetAvrgMean(First_trigger_time+132,First_trigger_time+332,0); //200
-	Float_t integral_short_100 = GetAvrgMean(First_trigger_time+182,First_trigger_time+282,0); //100
+	Float_t trigger_delay = 13;
+	//cout << "2" << endl;
+	Float_t integral_long = GetAvrgMean(First_trigger_time+trigger_delay-200,First_trigger_time+trigger_delay+200,0); //400
+	Float_t integral_medium = GetAvrgMean(First_trigger_time+trigger_delay-150,First_trigger_time+trigger_delay+150,0);//300
+	Float_t integral_short = GetAvrgMean(First_trigger_time+trigger_delay-100,First_trigger_time+trigger_delay+100,0); //200
+	Float_t integral_short_100 = GetAvrgMean(First_trigger_time+trigger_delay-50,First_trigger_time+trigger_delay+50,0); //100
 	Float_t integral_short_mean_100 = -999;
+	//cout << "3" << endl;
 	if (First_trigger_time>100)
-	  integral_short_mean_100 = GetAvrgMean(First_trigger_time+182,First_trigger_time+282,mean_short_100); //100 and subtract the 100 bin mean
-	Float_t integral_short_50 = GetAvrgMean(First_trigger_time+197,First_trigger_time+247,0);
+	  integral_short_mean_100 = GetAvrgMean(First_trigger_time+trigger_delay-50,First_trigger_time+trigger_delay-50,mean_short_100); //100 and subtract the 100 bin mean
+	Float_t integral_short_50 = GetAvrgMean(First_trigger_time+trigger_delay-25,First_trigger_time+trigger_delay+25,0);
 	Float_t integral_short_mean_50 = -999;
 	if (First_trigger_time>50)
-	  integral_short_mean_50 = GetAvrgMean(First_trigger_time+197,First_trigger_time+247,mean_short_50); //50 and subtract the 50 bin mean
-	Float_t min = FindMinimum(First_trigger_time+82,First_trigger_time+382); // find minimum in 300 bin range
+	  integral_short_mean_50 = GetAvrgMean(First_trigger_time+trigger_delay-25,First_trigger_time+trigger_delay+25,mean_short_50); //50 and subtract the 50 bin mean
+	Float_t min = FindMinimum(First_trigger_time+trigger_delay-150,First_trigger_time+trigger_delay+150); // find minimum in 300 bin range
 	Int_t n_triggers =  GetNumberOfTriggers(-200);
 	//min -= mean;
 	if (ientry%100==0)
