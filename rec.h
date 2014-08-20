@@ -42,14 +42,14 @@ class rec {
   Int_t           n_triggers_val;
   Int_t           First_trigger_time_val;
   Int_t           Second_trigger_time_val;
-
+  Int_t trigger_delay;
   // List of branches
   TBranch        *b_t;   //!
   TBranch        *b_n;   //!
   TBranch        *b_chn_sig;   //!
   TBranch        *b_chn_trg;   //!
   
-  rec(char*);
+  rec(char*, Int_t);
   virtual ~rec();
   virtual Int_t    Cut(Long64_t entry);
   virtual Int_t    GetEntry(Long64_t entry);
@@ -72,10 +72,11 @@ class rec {
 #endif
 
 #ifdef rec_cxx
-rec::rec(char *init_filename) : fChain(0) 
+rec::rec(char *init_filename, Int_t delay) : fChain(0) 
 {
    TTree *tree;
    filename = init_filename;
+   trigger_delay = delay;
    TFile *f = new TFile(filename);
    f->GetObject("rec", tree);
 

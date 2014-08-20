@@ -109,7 +109,7 @@ void rec::Loop()
 	  mean_short_100 = GetAvrgMean(First_trigger_time-100,First_trigger_time,0); //short (100 bin) average before the trigger
 	else
 	  cout << "First trigger is less than 100 bins after the trace start : " << First_trigger_time << endl;
-	Float_t trigger_delay = 13;
+	//Float_t trigger_delay = 13;
 	//cout << "2" << endl;
 	Float_t integral_long = GetAvrgMean(First_trigger_time+trigger_delay-200,First_trigger_time+trigger_delay+200,0); //400
 	Float_t integral_medium = GetAvrgMean(First_trigger_time+trigger_delay-150,First_trigger_time+trigger_delay+150,0);//300

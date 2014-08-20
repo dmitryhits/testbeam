@@ -5,6 +5,7 @@
 #include <TStyle.h>
 #include <TCanvas.h>
 #include <TGraph.h>
+#include <TF1.h>
 
 using namespace std;
 
@@ -34,12 +35,6 @@ void get_trigger_delay::Loop() {
   //by  b_branchname->GetEntry(ientry); //read only this branch
   if (fChain == 0) return;
   
-  //Book histograms
-  TH1F* h_max_signal = new TH1F("h_max_signal","Max signal",1200,-600,+600);
-  TH1F* h_1st_trigger_time = new TH1F("h_1st_trigger_time","The time of the 1st trigger",1024,0,1024);
-  TH1F* h_max_signal_time = new TH1F("h_max_signal_time","The time of the max signal",2048,-1024,1024);
-  TH1F* h_max_signal_time1 = new TH1F("h_max_signal_time1","The time of the max signal 1",1024,0,1024);
-  TH2F* h_max_signal_time_vs_ampitude = new TH2F("h_max_signal_time_vs_ampitude","Max signal time vs ampitude",2048,-1024,1024,1200,-600,600);
   //Append _time to the file name
   char output_filename[1024];
   if((sizeof(filename)+12) < sizeof(output_filename)){
@@ -52,9 +47,14 @@ void get_trigger_delay::Loop() {
     cout << "filename is too long" << endl;
   }
  
-
-  //TFile *ft = new TFile(output_filename,"RECREATE");
-  // Book tree branches
+  // oepn file for writing histograms
+  TFile *ft = new TFile(output_filename,"RECREATE");
+  //Book histograms
+  TH1F* h_max_signal = new TH1F("h_max_signal","Max signal",1200,-600,+600);
+  TH1F* h_1st_trigger_time = new TH1F("h_1st_trigger_time","The time of the 1st trigger",1024,0,1024);
+  TH1F* h_max_signal_time = new TH1F("h_max_signal_time","The time of the max signal",2048,-1024,1024);
+  TH1F* h_max_signal_time1 = new TH1F("h_max_signal_time1","The time of the max signal 1",1024,0,1024);
+  TH2F* h_max_signal_time_vs_ampitude = new TH2F("h_max_signal_time_vs_ampitude","Max signal time vs ampitude",2048,-1024,1024,1200,-600,600);
   
   Long64_t nentries = fChain->GetEntriesFast();
   
@@ -75,6 +75,14 @@ void get_trigger_delay::Loop() {
     h_max_signal_time_vs_ampitude->Fill(Max_signal_time-First_trigger_time, Max_signal);
       
   }
+  Float_t RMS = h_max_signal_time->GetRMS();
+  Float_t MAX = h_max_signal_time->GetBinCenter(h_max_signal_time->GetMaximumBin());
+  h_max_signal_time->Fit("gaus","Q0","",MAX-RMS,MAX+RMS);
+  TF1 *fit = h_max_signal_time->GetFunction("gaus");
+  Float_t delay = fit->GetParameter(1);
+  Float_t delay_bins = delay*0.7;
+  cout << "Run " << filename << " has delay " << delay << " ns or " << delay_bins << " bins" << endl; 
+  ft->Write();
 }
 
 Int_t get_trigger_delay::Get1stTriggerTime(Float_t trigger_level) {
